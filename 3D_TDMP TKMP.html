@@ -422,47 +422,46 @@ function App() {
     const scrollContainerRef = useRef(null);
     const [vantaEffect, setVantaEffect] = useState(null);
     
-    useEffect(() => {
+        useEffect(() => {
         const rootEl = document.getElementById('root');
         if (!vantaEffect && window.VANTA && window.VANTA.NET && rootEl) {
-                try {
-                    if (window.innerWidth < 768) return; // Prevent iOS WebKit crash
-                    const isMobile = window.innerWidth < 768;
-                    setVantaEffect(window.VANTA.NET({
-                        el: document.body,
-                        mouseControls: true,
-                        touchControls: true,
-                        gyroControls: false,
-                        minHeight: 200.00,
-                        minWidth: 200.00,
-                        scale: 1.00,
-                        scaleMobile: isMobile ? 1.5 : 1.0,
-                        color: isDarkMode ? 0xef4444 : 0x3b82f6,
-                        backgroundColor: isDarkMode ? 0x0f172a : 0xf8fafc,
-                        points: isMobile ? 8.00 : 12.00,
-                        maxDistance: isMobile ? 15.00 : 20.00,
-                        spacing: isMobile ? 15.00 : 20.00
-                    }))
-                } catch(e) {
-                    console.warn("Vanta initialize skipped", e);
-                }
-            }));
+            try {
+                if (window.innerWidth < 768) return; 
+                const isMobile = window.innerWidth < 768;
+                setVantaEffect(window.VANTA.NET({
+                    el: document.body,
+                    mouseControls: true,
+                    touchControls: true,
+                    gyroControls: false,
+                    minHeight: 200.00,
+                    minWidth: 200.00,
+                    scale: 1.00,
+                    scaleMobile: isMobile ? 1.5 : 1.0,
+                    color: isDarkMode ? 0xef4444 : 0x3b82f6,
+                    backgroundColor: isDarkMode ? 0x0f172a : 0xf8fafc,
+                    points: isMobile ? 8.00 : 12.00,
+                    maxDistance: isMobile ? 15.00 : 20.00,
+                    spacing: isMobile ? 15.00 : 20.00
+                }))
+            } catch(e) {
+                console.warn("Vanta initialize skipped", e);
+            }
         }
         return () => {
             if (vantaEffect) vantaEffect.destroy();
         }
     }, [vantaEffect]);
-    
+
     useEffect(() => {
         if (vantaEffect && typeof vantaEffect.setOptions === 'function') {
-                try {
-                    vantaEffect.setOptions({
-                color: isDarkMode ? 0x22d3ee : 0x0284c7,
-                backgroundColor: isDarkMode ? 0x020617 : 0xf0f9ff,
-            });
+            try {
+                vantaEffect.setOptions({
+                    color: isDarkMode ? 0x22d3ee : 0x0284c7,
+                    backgroundColor: isDarkMode ? 0x020617 : 0xf0f9ff
+                })
+            } catch(e) {}
         }
-                } catch(e) {}
-        }, [isDarkMode, vantaEffect]);
+    }, [isDarkMode, vantaEffect]);
 
 
     const playHeartbeatSound = () => {
