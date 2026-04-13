@@ -461,7 +461,8 @@ function App() {
                 backgroundColor: isDarkMode ? 0x020617 : 0xf0f9ff,
             });
         }
-    }, [isDarkMode, vantaEffect]);
+                } catch(e) {}
+        }, [isDarkMode, vantaEffect]);
 
 
     const playHeartbeatSound = () => {
