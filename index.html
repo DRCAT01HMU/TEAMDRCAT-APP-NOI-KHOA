@@ -320,7 +320,7 @@
     <div id="ebookLibrary" class="fixed inset-0 z-[60] bg-slate-50 dark:bg-slate-950 flex-col hidden transition-all duration-500 translate-y-full opacity-0 overflow-hidden">
         
         <!-- Dynamic Cinematic Video Background (Lazy Loaded for Speed) -->
-        <video id="libraryBgVideo" loop muted playsinline preload="none" class="absolute inset-0 w-full h-full object-cover pointer-events-none z-0 scale-105 opacity-100" style="will-change: transform;">
+        <video id="libraryBgVideo" loop muted playsinline preload="none" class="absolute inset-0 w-full h-full object-cover pointer-events-none z-0 scale-105 opacity-100">
             <source id="libraryBgSource" data-src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260314_131748_f2ca2a28-fed7-44c8-b9a9-bd9acdd5ec31.mp4" type="video/mp4">
         </video>
         <!-- Frosted Glass Overlay adapting to Light/Dark mode -->
@@ -395,7 +395,7 @@
     </div>
 
     <!-- EBOOK PDF VIEWER MODAL -->
-    <div id="pdfViewer" class="fixed inset-0 z-[80] bg-black/40 hidden flex-col transition-all duration-300 translate-y-full opacity-0" style="will-change: transform, opacity;">
+    <div id="pdfViewer" class="fixed inset-0 z-[80] bg-black/40 hidden flex-col transition-all duration-300 translate-y-full opacity-0">
         <div class="flex-none bg-black/40 backdrop-blur-2xl p-4 flex items-center justify-between pt-safe border-b border-white/10 shadow-sm z-20">
             <div class="flex items-center gap-3">
                 <div class="w-8 h-8 rounded-full bg-blue-500/80 flex items-center justify-center shadow-lg border border-blue-400/50">
@@ -736,7 +736,7 @@
                 html += `<div class="absolute bottom-[20px] left-2 right-2 h-1 bg-gradient-to-r from-transparent via-slate-300 dark:via-slate-600 to-transparent shadow-[0_5px_15px_rgba(30,58,138,0.3)] dark:shadow-[0_5px_15px_rgba(0,0,0,0.6)] z-0 rounded-full opacity-70"></div>`;
                 
                 // Books flex wrapper (Added Hardware Acceleration for smooth scroll)
-                html += `<div class="flex gap-4 overflow-x-auto custom-scrollbar pb-8 pt-2 px-2 snap-x snap-mandatory scroll-smooth relative z-10" style="-webkit-overflow-scrolling: touch; will-change: transform; transform: translateZ(0);">`;
+                html += `<div class="flex gap-4 overflow-x-auto custom-scrollbar pb-8 pt-2 px-2 snap-x snap-mandatory scroll-smooth relative z-10" style="-webkit-overflow-scrolling: touch; transform: translateZ(0);">`;
                 
                 filteredBooks.forEach((book, index) => {
                     totalBooksVisible++;
