@@ -396,7 +396,7 @@
 
     <!-- EBOOK PDF VIEWER MODAL -->
     <div id="pdfViewer" class="fixed inset-0 z-[80] bg-black/40 hidden flex-col transition-all duration-300 translate-y-full opacity-0">
-        <div class="flex-none bg-black/40 backdrop-blur-2xl p-4 flex items-center justify-between pt-safe border-b border-white/10 shadow-sm z-20">
+        <div class="flex-none bg-black/90 p-4 flex items-center justify-between pt-safe border-b border-white/10 shadow-sm z-20">
             <div class="flex items-center gap-3">
                 <div class="w-8 h-8 rounded-full bg-blue-500/80 flex items-center justify-center shadow-lg border border-blue-400/50">
                     <i class="fas fa-book-medical text-white text-xs"></i>
@@ -407,14 +407,14 @@
                 <a id="pdfExternalLink" href="#" target="_blank" class="w-9 h-9 rounded-full bg-blue-500/20 hover:bg-blue-500/40 text-blue-300 flex items-center justify-center transition-colors border border-blue-500/30 shadow-sm">
                     <i class="fas fa-external-link-alt text-xs"></i>
                 </a>
-                <button onclick="closePdfViewer()" class="px-4 py-2 bg-white/20 hover:bg-white/30 text-white rounded-full backdrop-blur-md text-xs font-bold transition-colors cursor-pointer border border-white/10 shadow-sm uppercase tracking-wider">
+                <button onclick="closePdfViewer()" class="px-4 py-2 bg-white/20 hover:bg-white/30 text-white rounded-full text-xs font-bold transition-colors cursor-pointer border border-white/10 shadow-sm uppercase tracking-wider">
                     Xong
                 </button>
             </div>
         </div>
-        <div class="flex-1 w-full bg-transparent relative max-w-5xl mx-auto border-x border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.5)] z-10 overflow-hidden">
+        <div class="flex-1 w-full bg-transparent relative max-w-5xl mx-auto border-x border-white/10 z-10 overflow-hidden">
             <!-- Loading Skeleton -->
-            <div id="pdfLoader" class="absolute inset-0 flex flex-col items-center justify-center bg-black/60 backdrop-blur-xl text-white z-0 transition-opacity duration-300">
+            <div id="pdfLoader" class="absolute inset-0 flex flex-col items-center justify-center bg-black/90 text-white z-0 transition-opacity duration-300">
                 <i class="fas fa-circle-notch fa-spin text-4xl text-blue-500 mb-4 drop-shadow-lg"></i>
                 <p class="font-medium animate-pulse text-slate-300 text-sm mb-2">Đang nạp file từ Hệ thống Drive...</p>
                 <p class="text-[10px] text-slate-400 max-w-xs text-center uppercase tracking-widest leading-relaxed">Nhấn nút [ <i class="fas fa-external-link-alt mx-1"></i> ] góc phải phần Tiêu đề để mở trên thẻ mới nếu bị chặn quyền chia sẻ.</p>
@@ -424,6 +424,10 @@
     </div>
 
     <script>
+        // --- BẢO VỆ CHỐNG CRASH BỘ NHỚ (OOM) TRÊN IOS SAFARI KHI ZOOM ---
+        document.addEventListener('gesturestart', function (e) { e.preventDefault(); });
+        document.addEventListener('touchmove', function(e) { if (e.scale !== 1 && e.scale !== undefined) { e.preventDefault(); } }, { passive: false });
+        
         const ALL_CASES = [{"url": "3D_BASEDOW.html", "title": "BASEDOW", "category": "N\u1ed9i Ti\u1ebft"},
 {"url": "3D_B\u01af\u1edaU NH\u00c2N TUY\u1ebeN GI\u00c1P.html", "title": "B\u01af\u1edaU NH\u00c2N TUY\u1ebeN GI\u00c1P", "category": "N\u1ed9i Ti\u1ebft"},
 {"url": "3D_COPD.html", "title": "COPD", "category": "H\u00f4 H\u1ea5p"},
