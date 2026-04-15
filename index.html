@@ -32,9 +32,6 @@
         .dark .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(71, 85, 105, 0.4); }
         .dark .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(71, 85, 105, 0.8); }
 
-        @keyframes float-up { 0% { opacity: 0; transform: translateY(20px); } 100% { opacity: 1; transform: translateY(0); } }
-        .card-anim { animation: float-up 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; }
-        
         /* Glass Tabs */
         .tab-active {
             background: rgba(255,255,255,0.2) !important;
@@ -52,8 +49,8 @@
             box-shadow: 10px 10px 20px rgba(0,0,0,0.2), inset 4px 0 10px rgba(255,255,255,0.2), inset -1px 0 2px rgba(0,0,0,0.1);
             position: relative;
             transform-origin: left center;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            transform-style: preserve-3d;
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            will-change: transform;
             border-radius: 2px 6px 6px 2px;
         }
         /* Book Binding / Spine effect */
@@ -317,7 +314,7 @@
 
 
     <!-- EBOOK LIBRARY MODAL V3 (Apple Books UI) -->
-    <div id="ebookLibrary" class="fixed inset-0 z-[60] bg-slate-50 dark:bg-slate-950 flex-col hidden transition-all duration-500 translate-y-full opacity-0 overflow-hidden">
+    <div id="ebookLibrary" class="fixed inset-0 z-[60] bg-slate-50 dark:bg-slate-950 flex flex-col transition-transform duration-300 ease-out translate-y-full overflow-hidden pointer-events-none">
         
         <!-- Dynamic Cinematic Video Background (Lazy Loaded for Speed) -->
         <video id="libraryBgVideo" loop muted playsinline preload="none" class="absolute inset-0 w-full h-full object-cover pointer-events-none z-0 scale-105 opacity-100">
@@ -327,18 +324,20 @@
         <div class="absolute inset-0 bg-white/20 dark:bg-black/40 z-0 pointer-events-none transition-colors duration-500"></div>
 
         <!-- Header Controls -->
-        <div class="relative z-10 flex-none bg-white/40 dark:bg-slate-900/40 backdrop-blur-2xl px-5 py-4 flex items-center justify-between border-b border-black/5 dark:border-white/5 pt-safe shadow-sm">
-            <h2 class="font-heading font-black text-2xl tracking-normal text-slate-800 dark:text-white flex items-center gap-2">SÁCH Y KHOA</h2>
-            <button onclick="closeEbookLibrary()" class="w-8 h-8 rounded-full bg-slate-200/80 dark:bg-slate-800/80 flex items-center justify-center text-slate-600 dark:text-slate-300 hover:bg-red-500 hover:text-white transition-colors duration-300">
+        <div class="relative z-10 flex-none bg-white/95 dark:bg-slate-900/95 px-5 py-3.5 flex items-center justify-center border-b border-black/5 dark:border-white/5 pt-safe shadow-sm transform-gpu min-h-[60px]">
+            <h2 class="font-heading font-extrabold text-[19px] uppercase tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-slate-800 via-slate-600 to-slate-800 dark:from-white dark:via-slate-200 dark:to-white text-center leading-tight px-8 drop-shadow-sm">
+                BỆNH HỌC NỘI KHOA <span class="bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-500 dark:from-blue-400 dark:to-indigo-300 font-black relative">Y HÀ NỘI</span>
+            </h2>
+            <button onclick="closeEbookLibrary()" class="absolute right-4 w-8 h-8 flex-shrink-0 rounded-full bg-slate-200/80 dark:bg-slate-800/80 flex items-center justify-center text-slate-600 dark:text-slate-300 hover:bg-red-500 hover:text-white transition-colors duration-300 z-10">
                 <i class="fas fa-times text-sm"></i>
             </button>
         </div>
 
         <!-- Search Bar -->
-        <div class="relative z-10 flex-none px-4 py-3 bg-white/20 dark:bg-slate-900/20 backdrop-blur-md shadow-sm border-b border-black/5 dark:border-white/5">
+        <div class="relative z-10 flex-none px-4 py-3 bg-white border-b border-black/5 dark:bg-slate-900 dark:border-white/5 transform-gpu shadow-sm">
             <div class="relative group">
                 <i class="fas fa-search absolute left-4 top-1/2 transform -translate-y-1/2 text-slate-400 group-focus-within:text-blue-500 transition-colors z-20"></i>
-                <input type="text" id="ebookSearchInput" placeholder="Tìm tên sách, bệnh học..." class="w-full relative z-10 bg-white/60 dark:bg-slate-800/60 backdrop-blur border border-transparent focus:border-blue-300/50 dark:focus:border-blue-500/50 text-slate-800 dark:text-white rounded-xl py-2.5 pl-10 pr-4 focus:outline-none focus:ring-4 focus:ring-blue-500/10 transition-all font-medium placeholder-slate-400 dark:placeholder-slate-500 shadow-inner">
+                <input type="text" id="ebookSearchInput" placeholder="Tìm tên sách, bệnh học..." class="w-full relative z-10 bg-slate-100 dark:bg-slate-800 border border-transparent focus:border-blue-300/50 dark:focus:border-blue-500/50 text-slate-800 dark:text-white rounded-xl py-2.5 pl-10 pr-4 focus:outline-none focus:ring-4 focus:ring-blue-500/10 transition-all font-medium placeholder-slate-400 dark:placeholder-slate-500 shadow-inner transform-gpu">
             </div>
         </div>
 
@@ -375,7 +374,7 @@
                     <div class="flex-1 flex flex-col justify-center">
                         <span id="bdCategory" class="text-[10px] font-black text-blue-500 uppercase tracking-widest bg-blue-50 dark:bg-blue-900/30 px-2 py-0.5 rounded w-max mb-2">CATEGORY</span>
                         <h2 id="bdTitle" class="font-heading font-black text-xl text-slate-800 dark:text-white leading-tight mb-2">Tên sách</h2>
-                        <p class="text-xs text-slate-500 dark:text-slate-400 font-medium mb-3">Tài liệu lưu hành nội bộ<br>Hệ thống: TEAMDRCAT YHN</p>
+                        <p class="text-xs text-slate-500 dark:text-slate-400 font-medium mb-3">Tài liệu lưu hành nội bộ<br>Hệ thống: TEAMDRCAT</p>
                         <div class="flex items-center gap-1 text-amber-500 text-xs">
                             <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
                             <span class="text-slate-400 ml-1">(4.8)</span>
@@ -684,35 +683,42 @@
 
         let isLibraryVideoLoaded = false;
         function openEbookLibrary() {
-            // Lazy load video only when library is opened to save initial bandwidth and GPU
-            if(!isLibraryVideoLoaded) {
-                const vid = document.getElementById('libraryBgVideo');
-                const src = document.getElementById('libraryBgSource');
-                if(vid && src) {
-                    src.src = src.getAttribute('data-src');
-                    vid.load();
-                    vid.play().catch(e => console.log('Autoplay block', e));
-                    isLibraryVideoLoaded = true;
-                }
+            ebookLibraryModal.classList.remove('pointer-events-none');
+            
+            // Execute animation in next paint loop
+            requestAnimationFrame(() => {
+                ebookLibraryModal.classList.remove('translate-y-full');
+            });
+            
+            // Defer overflow hidden to prevent layout thrashing and stutter during animation
+            setTimeout(() => {
+                document.body.style.overflow = 'hidden'; 
+            }, 300); 
+            
+            if (ebookSearchInput.value !== '') {
+                ebookSearchInput.value = '';
+                renderEbooks();
             }
 
-            ebookLibraryModal.classList.remove('hidden');
-            ebookLibraryModal.classList.add('flex');
-            // Allow display block first, then animate
-            setTimeout(() => {
-                ebookLibraryModal.classList.remove('translate-y-full', 'opacity-0');
-                document.body.style.overflow = 'hidden'; // block background scrolling
-            }, 10);
-            renderEbooks();
+            if(!isLibraryVideoLoaded) {
+                // Postpone heavy video load by 400ms so it doesn't freeze the CSS slide animation
+                setTimeout(() => {
+                    const vid = document.getElementById('libraryBgVideo');
+                    const src = document.getElementById('libraryBgSource');
+                    if(vid && src) {
+                        src.src = src.getAttribute('data-src');
+                        vid.load();
+                        vid.play().catch(e => console.log('Autoplay block', e));
+                        isLibraryVideoLoaded = true;
+                    }
+                }, 400);
+            }
         }
 
         function closeEbookLibrary() {
-            ebookLibraryModal.classList.add('translate-y-full', 'opacity-0');
-            setTimeout(() => {
-                ebookLibraryModal.classList.remove('flex');
-                ebookLibraryModal.classList.add('hidden');
-                document.body.style.overflow = 'auto'; // allow background scrolling
-            }, 500);
+            ebookLibraryModal.classList.add('translate-y-full');
+            ebookLibraryModal.classList.add('pointer-events-none');
+            document.body.style.overflow = 'auto'; // allow background scrolling
         }
 
         function renderEbooks() {
@@ -728,7 +734,7 @@
                 const animDelayChap = (chapterIndex * 0.1) + 's';
                 const patternStyle = catPatterns[chapter.chapterName] || catPatterns["TDefault"];
                 
-                html += `<div class="flex flex-col card-anim" style="animation-delay: ${animDelayChap}">`;
+                html += `<div class="flex flex-col">`;
                 html += `<div class="flex items-center justify-between px-2 mb-2">
                             <h3 class="font-heading font-black text-xl text-slate-800 dark:text-white uppercase tracking-wider pl-2 border-l-4 border-slate-800 dark:border-white leading-none">${chapter.chapterName}</h3>
                             <span class="text-[10px] font-bold text-slate-500 dark:text-slate-400 bg-slate-200/50 dark:bg-slate-800/50 px-2.5 py-1 rounded-full border border-slate-300/50 dark:border-slate-700">${filteredBooks.length} Bài</span>
@@ -746,7 +752,7 @@
                     totalBooksVisible++;
                     const animDelayBook = (index * 0.05) + 's';
                     html += `
-                    <div class="book-card shadow-xl shadow-slate-900/30 dark:shadow-black/60 cursor-pointer group w-[130px] flex-shrink-0 snap-start card-anim rounded-md" style="animation-delay: ${animDelayBook}" onclick="openBookDetail('${book.url}', '${book.title}', '${chapter.chapterName}', '${gradClass}')">
+                    <div class="book-card shadow-xl shadow-slate-900/30 dark:shadow-black/60 cursor-pointer group w-[130px] flex-shrink-0 snap-start rounded-md" onclick="openBookDetail('${book.url}', '${book.title}', '${chapter.chapterName}', '${gradClass}')">
                         <div class="w-full aspect-[1/1.4] ${gradClass} book-cover flex flex-col justify-between p-3 relative overflow-hidden rounded-md transition-all duration-300">
                             <!-- SVG Geometric Overlays (Removed mix-blend for mobile GPU speed) -->
                             <div class="absolute inset-0 opacity-10 pointer-events-none" style="${patternStyle}"></div>
@@ -762,7 +768,7 @@
                                 </h4>
                             </div>
                             <div class="relative z-10 w-full text-center pb-1 mt-auto">
-                                <div class="inline-block text-[8px] font-black text-white uppercase tracking-widest bg-black/40 rounded py-0.5 px-1.5 backdrop-blur-sm shadow border border-white/10">Y HÀ NỘI</div>
+                                <div class="inline-block text-[8px] font-black text-white uppercase tracking-widest bg-black/60 rounded py-0.5 px-1.5 shadow border border-white/10">Y HÀ NỘI</div>
                             </div>
                         </div>
                     </div>
@@ -773,7 +779,7 @@
             });
             
             if(totalBooksVisible === 0) {
-                html = `<div class="w-full py-16 text-center card-anim"><i class="fas fa-search-minus text-5xl text-slate-300 dark:text-slate-600 mb-4 drop-shadow"></i><p class="text-sm font-medium text-slate-500 mt-3">Thư viện chưa có cuốn sách này.</p></div>`;
+                html = `<div class="w-full py-16 text-center"><i class="fas fa-search-minus text-5xl text-slate-300 dark:text-slate-600 mb-4 drop-shadow"></i><p class="text-sm font-medium text-slate-500 mt-3">Thư viện chưa có cuốn sách này.</p></div>`;
             }
             ebookListEl.innerHTML = html;
         }
@@ -840,20 +846,21 @@
 
         // Bridge: "Đọc Sách" -> "PDF Viewer"
         document.getElementById('btnReadNow').addEventListener('click', () => {
-            closeBookDetail();
-            // Wait for bottom sheet to exit
-            setTimeout(() => {
-                const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-                const isMobile = window.innerWidth < 768 || isIOS;
-                if (isMobile) {
-                    // For mobile/iOS: Open natively in Safari View Controller. 
-                    // This bypasses the iframe memory crash (OOM) and allows native pinch-to-zoom!
-                    window.open(activePdfUrl, '_blank');
-                } else {
-                    // Desktop: Use seamless iframe modal
+            const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+            const isMobile = window.innerWidth < 768 || isIOS;
+            
+            if (isMobile) {
+                // INSTANT OPEN: Do this BEFORE set timeouts or sheet closing so Safari/Chrome doesn't block the popup!
+                // This guarantees 0ms latency feeling for the user.
+                window.open(activePdfUrl, '_blank');
+                closeBookDetail(); // Close UI quietly in background
+            } else {
+                closeBookDetail();
+                // Desktop: wait for animation to finish before heavy PDF load to prevent stutter
+                setTimeout(() => {
                     openPdfViewer(activePdfUrl, activePdfTitle);
-                }
-            }, 300);
+                }, 300);
+            }
         });
 
         function openPdfViewer(url, title) {
@@ -1015,6 +1022,9 @@
                 }
             }
         });
+
+        // Setup Ebook Grid IMMEDIATELY to prevent click blocking layout thrashing
+        document.addEventListener('DOMContentLoaded', () => renderEbooks());
     </script>
 </body>
 </html>
