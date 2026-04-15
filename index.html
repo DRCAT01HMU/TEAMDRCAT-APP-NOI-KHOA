@@ -841,9 +841,18 @@
         // Bridge: "Đọc Sách" -> "PDF Viewer"
         document.getElementById('btnReadNow').addEventListener('click', () => {
             closeBookDetail();
-            // Wait for bottom sheet to exit, then slide up PDF
+            // Wait for bottom sheet to exit
             setTimeout(() => {
-                openPdfViewer(activePdfUrl, activePdfTitle);
+                const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+                const isMobile = window.innerWidth < 768 || isIOS;
+                if (isMobile) {
+                    // For mobile/iOS: Open natively in Safari View Controller. 
+                    // This bypasses the iframe memory crash (OOM) and allows native pinch-to-zoom!
+                    window.open(activePdfUrl, '_blank');
+                } else {
+                    // Desktop: Use seamless iframe modal
+                    openPdfViewer(activePdfUrl, activePdfTitle);
+                }
             }, 300);
         });
 
