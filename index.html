@@ -851,11 +851,15 @@
             // Sử dụng cơ chế 'beacon' để đảm bảo tab dù bị Freeze bởi hệ điều hành lúc mở tab mới thì hệ thống mạng OS vẫn ngầm gửi tín hiệu đi 100%.
             if (typeof gtag === 'function') {
                 try {
-                    // 1. GA4 cực kỳ khắt khe: Nó hay bắt Title gốc của file HTML. Ta sẽ tạm đổi document.title để ép GA4 nhận tên sách.
+                    // 1. Đổi document.title
                     const originalTitle = document.title;
                     document.title = 'Sách: ' + activePdfTitle;
+                    
+                    // Xử lý tạo đường dẫn ảo để lừa thẻ "Đường dẫn trang" của Analytics
+                    const basePath = window.location.pathname.endsWith('/') ? window.location.pathname : window.location.pathname + '/';
+                    const fakePath = basePath + 'docsach/' + encodeURIComponent(activePdfTitle.replace(/\s+/g, '-'));
 
-                    // 2. Gửi Custom Event (Lưu trữ mở rộng)
+                    // 2. Gửi Custom Event
                     gtag('event', 'open_book', {
                         'event_category': 'Medical Ebook',
                         'event_label': activePdfTitle,
@@ -863,23 +867,24 @@
                         'transport_type': 'beacon'
                     });
                     
-                    // 3. Gửi Screen View & Page View (Ép hiển thị Realtime)
-                    gtag('event', 'screen_view', {
-                        'app_name': 'App Nội Khoa',
-                        'screen_name': activePdfTitle,
-                        'transport_type': 'beacon'
-                    });
-
+                    // 3. ÉP GA4 ĐỌC MỘT PAGE_PATH TỰ TẠO
                     gtag('event', 'page_view', {
                         'page_title': document.title,
-                        'page_location': window.location.href + '?book=' + encodeURIComponent(activePdfTitle),
+                        'page_path': fakePath,
+                        'page_location': window.location.origin + fakePath,
                         'transport_type': 'beacon'
                     });
                     
-                    // Trả lại Title cũ sau 1s
-                    setTimeout(() => { document.title = originalTitle; }, 1000);
+                    // Lịch sử web cũng báo đã chuyển trang nhẹ 
+                    history.replaceState(null, '', fakePath);
+                    
+                    // Trả lại Title và link gốc sau 1s
+                    setTimeout(() => { 
+                        document.title = originalTitle; 
+                        history.replaceState(null, '', basePath);
+                    }, 1000);
 
-                    console.log('🌟 [Analytics] Sent target: open_book ->', activePdfTitle);
+                    console.log('🌟 [Analytics] Sent target: open_book ->', activePdfTitle, fakePath);
                 } catch(e) { console.error('Analytics Error:', e); }
             }
 
