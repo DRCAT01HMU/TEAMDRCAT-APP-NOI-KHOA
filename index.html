@@ -847,23 +847,16 @@
             const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
             const isMobile = window.innerWidth < 768 || isIOS;
             
-            // [ANALYTICS] Non-blocking tracking (0% impact on animation frame rate)
+            // [ANALYTICS] Bắn dữ liệu ngay lập tức vào dataLayer (chiếm mảng nội bộ < 1ms, không làm ảnh hưởng framerate).
+            // Nếu dùng setTimeout/requestIdleCallback, trình duyệt di động (Safari iOS) có thể "đóng băng" tab hiện tại khi mở sang tab mới, khiến event không bao giờ được gửi đi.
             if (typeof gtag === 'function') {
-                const trackData = () => {
-                    try {
-                        gtag('event', 'open_book', {
-                            'event_category': 'Medical Ebook',
-                            'event_label': activePdfTitle,
-                            'book_url': activePdfUrl
-                        });
-                    } catch(e) {}
-                };
-                // Use requestIdleCallback to perform tracking when browser is completely idle. Fallback to 800ms timeout.
-                if ('requestIdleCallback' in window) {
-                    window.requestIdleCallback(trackData, { timeout: 2000 });
-                } else {
-                    setTimeout(trackData, 800);
-                }
+                try {
+                    gtag('event', 'open_book', {
+                        'event_category': 'Medical Ebook',
+                        'event_label': activePdfTitle,
+                        'book_url': activePdfUrl
+                    });
+                } catch(e) { console.error('Analytics Error:', e); }
             }
 
             if (isMobile) {
