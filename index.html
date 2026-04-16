@@ -49,8 +49,7 @@
             box-shadow: 10px 10px 20px rgba(0,0,0,0.2), inset 4px 0 10px rgba(255,255,255,0.2), inset -1px 0 2px rgba(0,0,0,0.1);
             position: relative;
             transform-origin: left center;
-            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            will-change: transform;
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             border-radius: 2px 6px 6px 2px;
         }
         /* Book Binding / Spine effect */
@@ -74,7 +73,7 @@
             bottom: 1%;
             width: 2px;
             background: rgba(255,255,255,0.8);
-            box-shadow: 1px 0 0 rgba(230,230,230,0.8), 2px 0 0 rgba(200,200,200,0.8);
+            box-shadow: 1px 0 0 rgba(230,230,230,0.8);
             z-index: 5;
             border-radius: 0 1px 1px 0;
         }
@@ -581,7 +580,7 @@
                 const animDelay = (visibleCount * 0.05) + 's';
                 
                 html += `
-                <a href="${caseItem.url}" class="card-anim block group relative bg-white dark:bg-slate-900 rounded-[24px] p-5 shadow-[0_4px_15px_rgb(0,0,0,0.05)] dark:shadow-[0_4px_15px_rgb(0,0,0,0.3)] hover:shadow-2xl transition-all duration-300 border border-slate-200/50 dark:border-slate-800 overflow-hidden transform-gpu will-change-transform" style="animation-delay: ${animDelay}">
+                <a href="${caseItem.url}" class="card-anim block group relative bg-white dark:bg-slate-900 rounded-[24px] p-5 shadow-sm hover:shadow-md transition-shadow duration-300 border border-slate-200/50 dark:border-slate-800 overflow-hidden" style="animation-delay: ${animDelay}">
                     ${isCompleted ? '<div class="absolute top-0 right-0 w-16 h-16 bg-gradient-to-bl from-emerald-500/20 to-transparent flex items-start justify-end rounded-tr-[24px]"><i class="fas fa-check text-emerald-500 p-3 pr-4 text-lg"></i></div>' : ''}
                     <div class="relative flex items-center justify-between z-10">
                         <div class="flex items-center gap-4">
@@ -751,8 +750,8 @@
                     totalBooksVisible++;
                     const animDelayBook = (index * 0.05) + 's';
                     html += `
-                    <div class="book-card shadow-xl shadow-slate-900/30 dark:shadow-black/60 cursor-pointer group w-[130px] flex-shrink-0 snap-start rounded-md" onclick="openBookDetail('${book.url}', '${book.title}', '${chapter.chapterName}', '${gradClass}')">
-                        <div class="w-full aspect-[1/1.4] ${gradClass} book-cover flex flex-col justify-between p-3 relative overflow-hidden rounded-md transition-transform duration-300 transform-gpu will-change-transform">
+                    <div class="book-card shadow-md cursor-pointer group w-[130px] flex-shrink-0 snap-start rounded-md" onclick="openBookDetail('${book.url}', '${book.title}', '${chapter.chapterName}', '${gradClass}')">
+                        <div class="w-full aspect-[1/1.4] ${gradClass} book-cover flex flex-col justify-between p-3 relative overflow-hidden rounded-md transition-transform duration-300">
                             <!-- SVG Geometric Overlays (Removed mix-blend for mobile GPU speed) -->
                             <div class="absolute inset-0 opacity-10 pointer-events-none" style="${patternStyle}"></div>
                             <!-- Dynamic Parallax Glare Layer -->
@@ -975,9 +974,11 @@
         /* -------------------------------------
            3D PARALLAX HOVER TILT (GLARE EFFECT)
         ----------------------------------------*/
+        const isTouchDevice = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+        
         document.addEventListener('mousemove', (e) => {
-            // Do not run tilt calculations if user is dragging to scroll
-            if(_isDown) return; 
+            // Do not run tilt on touch devices or if dragging
+            if(isTouchDevice || _isDown) return; 
             
             const card = e.target.closest('.book-card');
             if(!card) return;
