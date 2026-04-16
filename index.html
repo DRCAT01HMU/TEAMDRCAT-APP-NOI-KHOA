@@ -848,17 +848,25 @@
             const isMobile = window.innerWidth < 768 || isIOS;
             
             // [ANALYTICS] Bắn dữ liệu ngay lập tức vào dataLayer (chiếm mảng nội bộ < 1ms, không làm ảnh hưởng framerate).
-            // Nếu dùng setTimeout/requestIdleCallback, trình duyệt di động (Safari iOS) có thể "đóng băng" tab hiện tại khi mở sang tab mới, khiến event không bao giờ được gửi đi.
-            // [ANALYTICS] Bắn dữ liệu ngay lập tức vào dataLayer (chiếm mảng nội bộ < 1ms, không làm ảnh hưởng framerate).
             // Sử dụng cơ chế 'beacon' để đảm bảo tab dù bị Freeze bởi hệ điều hành lúc mở tab mới thì hệ thống mạng OS vẫn ngầm gửi tín hiệu đi 100%.
             if (typeof gtag === 'function') {
                 try {
+                    // 1. Gửi Custom Event (Lưu trữ mở rộng)
                     gtag('event', 'open_book', {
                         'event_category': 'Medical Ebook',
                         'event_label': activePdfTitle,
                         'book_url': activePdfUrl,
-                        'transport_type': 'beacon' // Cực kỳ quan trọng để chống nghẽn / drop request trên Mobile
+                        'transport_type': 'beacon'
                     });
+                    
+                    // 2. Gửi Page View ảo (ĐỂ HIỂN THỊ NGAY TÊN SÁCH LÊN THẺ "REALTIME" CỦA GA4)
+                    // GA4 Realtime chỉ show mặc định page_title ở thẻ "Views by Page title", các event phụ phải config custom dimension mất 24h.
+                    gtag('event', 'page_view', {
+                        'page_title': 'Đọc sách: ' + activePdfTitle,
+                        'page_location': window.location.origin + '/sach/' + encodeURIComponent(activePdfTitle),
+                        'transport_type': 'beacon'
+                    });
+                    
                     console.log('🌟 [Analytics] Sent target: open_book ->', activePdfTitle);
                 } catch(e) { console.error('Analytics Error:', e); }
             }
