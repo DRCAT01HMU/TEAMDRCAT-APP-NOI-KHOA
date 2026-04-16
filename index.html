@@ -847,6 +847,25 @@
             const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
             const isMobile = window.innerWidth < 768 || isIOS;
             
+            // [ANALYTICS] Non-blocking tracking (0% impact on animation frame rate)
+            if (typeof gtag === 'function') {
+                const trackData = () => {
+                    try {
+                        gtag('event', 'open_book', {
+                            'event_category': 'Medical Ebook',
+                            'event_label': activePdfTitle,
+                            'book_url': activePdfUrl
+                        });
+                    } catch(e) {}
+                };
+                // Use requestIdleCallback to perform tracking when browser is completely idle. Fallback to 800ms timeout.
+                if ('requestIdleCallback' in window) {
+                    window.requestIdleCallback(trackData, { timeout: 2000 });
+                } else {
+                    setTimeout(trackData, 800);
+                }
+            }
+
             if (isMobile) {
                 // INSTANT OPEN: Do this BEFORE set timeouts or sheet closing so Safari/Chrome doesn't block the popup!
                 // This guarantees 0ms latency feeling for the user.
