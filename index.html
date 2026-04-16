@@ -606,7 +606,20 @@
         const themeToggle = document.getElementById('themeToggle');
         const htmlContext = document.documentElement;
         if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) { htmlContext.classList.add('dark'); }
-        themeToggle.addEventListener('click', () => { htmlContext.classList.toggle('dark'); localStorage.setItem('theme', htmlContext.classList.contains('dark') ? 'dark' : 'light'); });
+        themeToggle.addEventListener('click', () => { 
+            // KHẮC PHỤC KHỰNG IPAD: Tắt sạch CSS transition trước khi đổi theme
+            const css = document.createElement('style'); 
+            css.innerText = '* { transition: none !important; }';
+            document.head.appendChild(css);
+
+            htmlContext.classList.toggle('dark'); 
+            localStorage.setItem('theme', htmlContext.classList.contains('dark') ? 'dark' : 'light'); 
+            
+            // Chờ trình duyệt Paint xong giao diện không có Animation rồi mới trả lại
+            requestAnimationFrame(() => {
+                setTimeout(() => document.head.removeChild(css), 50);
+            });
+        });
 
         renderCategories(); renderCases(); updateStats();
         
@@ -689,12 +702,14 @@
             // Defer overflow hidden to prevent layout thrashing and stutter during animation
             setTimeout(() => {
                 document.body.style.overflow = 'hidden'; 
-            }, 300); 
-            
-            if (ebookSearchInput.value !== '') {
-                ebookSearchInput.value = '';
-                renderEbooks();
-            }
+                // KHẮC PHỤC KHỰNG IPAD: Render tủ sách SAU KHI mở modal 350ms (Tăng mượt mà lên 60FPS)
+                if (ebookListEl.innerHTML.trim() === '') {
+                    renderEbooks();
+                } else if (ebookSearchInput.value !== '') {
+                    ebookSearchInput.value = '';
+                    renderEbooks();
+                }
+            }, 350); 
 
             if(!isLibraryVideoLoaded) {
                 // Postpone heavy video load by 400ms so it doesn't freeze the CSS slide animation
@@ -1080,8 +1095,7 @@
             }
         });
 
-        // Setup Ebook Grid IMMEDIATELY to prevent click blocking layout thrashing
-        document.addEventListener('DOMContentLoaded', () => renderEbooks());
+        // Đã xóa hàm tự khởi tạo lúc bắt đầu để tiết kiệm VRAM cho Safari (Tránh lỗi Khựng)
     </script>
 </body>
 </html>
