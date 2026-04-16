@@ -849,13 +849,17 @@
             
             // [ANALYTICS] Bắn dữ liệu ngay lập tức vào dataLayer (chiếm mảng nội bộ < 1ms, không làm ảnh hưởng framerate).
             // Nếu dùng setTimeout/requestIdleCallback, trình duyệt di động (Safari iOS) có thể "đóng băng" tab hiện tại khi mở sang tab mới, khiến event không bao giờ được gửi đi.
+            // [ANALYTICS] Bắn dữ liệu ngay lập tức vào dataLayer (chiếm mảng nội bộ < 1ms, không làm ảnh hưởng framerate).
+            // Sử dụng cơ chế 'beacon' để đảm bảo tab dù bị Freeze bởi hệ điều hành lúc mở tab mới thì hệ thống mạng OS vẫn ngầm gửi tín hiệu đi 100%.
             if (typeof gtag === 'function') {
                 try {
                     gtag('event', 'open_book', {
                         'event_category': 'Medical Ebook',
                         'event_label': activePdfTitle,
-                        'book_url': activePdfUrl
+                        'book_url': activePdfUrl,
+                        'transport_type': 'beacon' // Cực kỳ quan trọng để chống nghẽn / drop request trên Mobile
                     });
+                    console.log('🌟 [Analytics] Sent target: open_book ->', activePdfTitle);
                 } catch(e) { console.error('Analytics Error:', e); }
             }
 
