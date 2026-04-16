@@ -40,46 +40,24 @@
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
         }
 
-        /* Apple Books Style Additions */
+        /* Folder Style Additions */
         .pt-safe { padding-top: env(safe-area-inset-top); }
-        .book-card {
+        .folder-mask {
+            -webkit-mask-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 130 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M 0 12 A 12 12 0 0 1 12 0 L 55 0 A 8 8 0 0 1 63 8 L 63 16 A 6 6 0 0 0 69 22 L 118 22 A 12 12 0 0 1 130 34 L 130 168 A 12 12 0 0 1 118 180 L 12 180 A 12 12 0 0 1 0 168 Z' fill='black'/%3E%3C/svg%3E");
+            -webkit-mask-size: 100% 100%;
+            -webkit-mask-repeat: no-repeat;
+            mask-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 130 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M 0 12 A 12 12 0 0 1 12 0 L 55 0 A 8 8 0 0 1 63 8 L 63 16 A 6 6 0 0 0 69 22 L 118 22 A 12 12 0 0 1 130 34 L 130 168 A 12 12 0 0 1 118 180 L 12 180 A 12 12 0 0 1 0 168 Z' fill='black'/%3E%3C/svg%3E");
+            mask-size: 100% 100%;
+            mask-repeat: no-repeat;
+        }
+        .folder-shadow {
+            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.08));
+        }
+        .dark .folder-shadow {
+            filter: drop-shadow(0 5px 12px rgba(0,0,0,0.4));
+        }
+        .folder-card-wrapper {
             perspective: 1000px;
-        }
-        .book-cover {
-            box-shadow: 10px 10px 20px rgba(0,0,0,0.2), inset 4px 0 10px rgba(255,255,255,0.2), inset -1px 0 2px rgba(0,0,0,0.1);
-            position: relative;
-            transform-origin: left center;
-            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            border-radius: 2px 6px 6px 2px;
-        }
-        /* Book Binding / Spine effect */
-        .book-cover::before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 0;
-            bottom: 0;
-            width: 4px;
-            background: linear-gradient(90deg, rgba(255,255,255,0.5) 0%, rgba(255,255,255,0) 100%);
-            z-index: 10;
-            border-radius: 2px 0 0 2px;
-        }
-        /* Pages edge effect */
-        .book-cover::after {
-            content: '';
-            position: absolute;
-            right: 0;
-            top: 1%;
-            bottom: 1%;
-            width: 2px;
-            background: rgba(255,255,255,0.8);
-            box-shadow: 1px 0 0 rgba(230,230,230,0.8);
-            z-index: 5;
-            border-radius: 0 1px 1px 0;
-        }
-        .book-card:hover .book-cover {
-            transform: rotateY(-5deg) scale(1.02);
-            box-shadow: 15px 15px 25px rgba(0,0,0,0.25), inset 4px 0 10px rgba(255,255,255,0.3);
         }
         .ebook-gradient-1 { background: linear-gradient(135deg, #1e3a8a, #3b82f6); }
         .ebook-gradient-2 { background: linear-gradient(135deg, #4c1d95, #8b5cf6); }
@@ -361,11 +339,22 @@
             
             <div class="px-6 pb-8 pt-2 overflow-y-auto custom-scrollbar">
                 <div class="flex gap-5 mb-6">
-                    <!-- Dynamic Cover Preview -->
-                    <div id="bdCover" class="w-[110px] sm:w-[130px] aspect-[1/1.4] bg-blue-500 rounded-md shadow-2xl relative overflow-hidden flex-shrink-0 book-cover">
-                        <div id="bdPattern" class="absolute inset-0 opacity-15 pointer-events-none"></div>
-                        <div class="relative z-10 w-full flex flex-col justify-center items-center h-full px-2">
-                            <h4 id="bdCoverTitle" class="text-white font-heading font-black text-sm text-center leading-tight drop-shadow-md text-balance">Title</h4>
+                    <!-- Dynamic Folder Preview -->
+                    <div class="folder-shadow relative flex-shrink-0 w-[110px] sm:w-[130px] aspect-[1/1.4]">
+                        <div id="bdCover" class="absolute inset-0 folder-mask bg-white dark:bg-slate-800 flex flex-col">
+                            <div id="bdCoverBg" class="h-[60%] w-full bg-blue-500 relative flex flex-col p-2 pt-6">
+                                <div id="bdPattern" class="absolute inset-0 opacity-15 pointer-events-none"></div>
+                                <div class="flex-1 flex items-center justify-center z-10">
+                                    <h4 id="bdCoverTitle" class="text-white font-heading font-black text-sm leading-tight drop-shadow-md text-center text-balance px-1">Title</h4>
+                                </div>
+                            </div>
+                            <div class="h-[40%] w-full bg-slate-50 dark:bg-slate-800 p-2.5 flex flex-col justify-end border-t border-black/5 dark:border-white/5">
+                                <span class="text-[9px] text-slate-400 dark:text-slate-500 font-bold mb-0.5 tracking-wider">Y HÀ NỘI</span>
+                                <div class="flex justify-between items-center text-[11px] text-slate-700 dark:text-slate-200 font-bold">
+                                    <span id="bdCoverChap" class="truncate pr-1">Category</span>
+                                    <i class="fas fa-chevron-down text-[8px] text-slate-400"></i>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     
@@ -750,23 +739,33 @@
                     totalBooksVisible++;
                     const animDelayBook = (index * 0.05) + 's';
                     html += `
-                    <div class="book-card shadow-md cursor-pointer group w-[130px] flex-shrink-0 snap-start rounded-md" onclick="openBookDetail('${book.url}', '${book.title}', '${chapter.chapterName}', '${gradClass}')">
-                        <div class="w-full aspect-[1/1.4] ${gradClass} book-cover flex flex-col justify-between p-3 relative overflow-hidden rounded-md transition-transform duration-300">
-                            <!-- SVG Geometric Overlays (Removed mix-blend for mobile GPU speed) -->
-                            <div class="absolute inset-0 opacity-10 pointer-events-none" style="${patternStyle}"></div>
-                            <!-- Dynamic Parallax Glare Layer -->
-                            <div class="absolute inset-0 z-20 pointer-events-none glare-element opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                            
-                            <div class="relative z-10 w-full text-center mt-1">
-                                <div class="w-6 h-[3px] bg-white/40 rounded-full mx-auto my-1 shadow-sm border border-white/20"></div>
+                    <div class="folder-card-wrapper cursor-pointer group w-[130px] flex-shrink-0 snap-start relative aspect-[1/1.4] folder-shadow" onclick="openBookDetail('${book.url}', '${book.title}', '${chapter.chapterName}', '${gradClass}')">
+                        
+                        <!-- Back layer 2 (Deepest) -->
+                        <div class="absolute inset-0 bg-slate-300 dark:bg-slate-700 folder-mask translate-x-3 -translate-y-2 scale-95 opacity-50 z-0 transition-transform duration-300 group-hover:translate-x-4 group-hover:-translate-y-3"></div>
+                        
+                        <!-- Back layer 1 (Middle) -->
+                        <div class="absolute inset-0 bg-slate-200 dark:bg-slate-600 folder-mask translate-x-1.5 -translate-y-1 scale-[0.98] opacity-80 z-0 transition-transform duration-300 group-hover:translate-x-2 group-hover:-translate-y-1.5"></div>
+                        
+                        <!-- Main Layer (Front Folder) -->
+                        <div class="absolute inset-0 folder-mask bg-white dark:bg-slate-800 z-10 flex flex-col transition-transform duration-300 group-hover:-translate-y-1">
+                            <!-- Colored Top Folder Body -->
+                            <div class="h-[60%] w-full ${gradClass} relative flex flex-col p-2 pt-6">
+                                <div class="absolute inset-0 opacity-10 pointer-events-none" style="${patternStyle}"></div>
+                                <div class="absolute inset-0 z-20 pointer-events-none glare-element opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                                <div class="flex-1 flex items-center justify-center z-10">
+                                     <h4 class="text-white font-heading font-black text-[12px] leading-tight drop-shadow-md text-center text-balance px-1">
+                                         ${book.title}
+                                     </h4>
+                                </div>
                             </div>
-                            <div class="relative z-10 w-full flex-grow flex flex-col justify-center items-center px-1">
-                                <h4 class="text-white font-heading font-black text-[12px] leading-tight drop-shadow-md flex flex-col gap-1 items-center justify-center pt-1 text-center w-full tracking-tight text-balance">
-                                    ${book.title}
-                                </h4>
-                            </div>
-                            <div class="relative z-10 w-full text-center pb-1 mt-auto">
-                                <div class="inline-block text-[8px] font-black text-white uppercase tracking-widest bg-black/60 rounded py-0.5 px-1.5 shadow border border-white/10">Y HÀ NỘI</div>
+                            <!-- White Bottom Panel -->
+                            <div class="h-[40%] w-full bg-slate-50 dark:bg-slate-800 p-2.5 flex flex-col justify-end border-t border-black/5 dark:border-white/5">
+                                <span class="text-[9px] text-slate-400 dark:text-slate-500 font-bold mb-0.5 tracking-wider">Y HÀ NỘI</span>
+                                <div class="flex justify-between items-center text-[11px] text-slate-700 dark:text-slate-200 font-bold">
+                                    <span class="truncate pr-1">${chapter.chapterName}</span>
+                                    <i class="fas fa-chevron-down text-[8px] text-slate-400 dark:text-slate-500"></i>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -808,8 +807,9 @@
             document.getElementById('bdCategory').innerText = category;
             
             // Assign Cover Gradient and Pattern
-            const coverEl = document.getElementById('bdCover');
-            coverEl.className = `w-[110px] sm:w-[130px] aspect-[1/1.4] rounded-md shadow-2xl relative overflow-hidden flex-shrink-0 book-cover ${gradClass}`;
+            const coverBgEl = document.getElementById('bdCoverBg');
+            coverBgEl.className = `h-[60%] w-full ${gradClass} relative flex flex-col p-2 pt-6`;
+            document.getElementById('bdCoverChap').innerText = category;
             
             const patternEl = document.getElementById('bdPattern');
             patternEl.style = catPatterns[category] || catPatterns["TDefault"];
@@ -980,10 +980,10 @@
             // Do not run tilt on touch devices or if dragging
             if(isTouchDevice || _isDown) return; 
             
-            const card = e.target.closest('.book-card');
+            const card = e.target.closest('.folder-card-wrapper');
             if(!card) return;
             
-            const cover = card.querySelector('.book-cover');
+            const cover = card.querySelector('.folder-mask');
             if(!cover) return;
 
             const rect = card.getBoundingClientRect();
