@@ -182,7 +182,7 @@
       gtag('config', 'G-C6RSXNG6J3');
     </script>
 </head>
-<body class="bg-gray-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 min-h-screen app-footer overscroll-none touch-pan-x touch-pan-y">
+<body class="bg-gray-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 min-h-screen app-footer transition-colors duration-300 overscroll-none touch-pan-x touch-pan-y">
 
     <!-- THE LOCK SCREEN V4 (CYBER SECURITY) -->
     <div id="lock-screen" class="fixed inset-0 z-[100000] bg-slate-900 flex-col items-center justify-center p-6 text-center select-none transition-opacity duration-500" style="display: none; background: radial-gradient(circle at center, #1e293b 0%, #020617 100%);">
@@ -239,9 +239,9 @@
                     <i class="fas fa-heart"></i>
                     <span id="bookmarkCount" class="absolute -top-1 -right-1 bg-gradient-to-tr from-red-600 to-pink-500 text-white text-[10px] font-bold w-4 h-4 flex items-center justify-center rounded-full hidden shadow-lg">0</span>
                 </button>
-                <button id="themeToggle" class="w-10 h-10 rounded-full bg-slate-100/80 dark:bg-slate-800/80 flex items-center justify-center text-slate-600 dark:text-slate-300 transition-colors shadow-inner border border-white dark:border-slate-700">
-                    <i class="fas fa-moon dark:hidden text-indigo-500"></i>
-                    <i class="fas fa-sun hidden dark:block text-amber-500"></i>
+                <button id="themeToggle" class="relative w-10 h-10 rounded-full bg-slate-100/80 dark:bg-slate-800/80 flex items-center justify-center text-slate-600 dark:text-slate-300 transition-all duration-300 shadow-inner border border-white dark:border-slate-700 active:scale-90 transform-gpu">
+                    <i class="fas fa-moon absolute transition-all duration-500 ease-in-out transform dark:-rotate-90 dark:scale-50 dark:opacity-0 text-indigo-500"></i>
+                    <i class="fas fa-sun absolute transition-all duration-500 ease-in-out transform rotate-90 scale-50 opacity-0 dark:rotate-0 dark:scale-100 dark:opacity-100 text-amber-500"></i>
                 </button>
             </div>
         </div>
