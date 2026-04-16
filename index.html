@@ -53,14 +53,17 @@
             mask-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 130 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M 0 12 A 12 12 0 0 1 12 0 L 55 0 A 8 8 0 0 1 63 8 L 63 16 A 6 6 0 0 0 69 22 L 118 22 A 12 12 0 0 1 130 34 L 130 168 A 12 12 0 0 1 118 180 L 12 180 A 12 12 0 0 1 0 168 Z' fill='black'/%3E%3C/svg%3E");
             mask-size: 100% 100%;
             mask-repeat: no-repeat;
-            transform: translateZ(0); 
-            backface-visibility: hidden;
+            /* Đã bỏ translateZ để iPad không bị quá tải chia quá nhiều Texture đồ họa cho Mask */
         }
         .folder-shadow {
             filter: drop-shadow(0 4px 6px rgba(0,0,0,0.08));
         }
         .dark .folder-shadow {
             filter: drop-shadow(0 5px 12px rgba(0,0,0,0.4));
+        }
+        @media (hover: none) {
+            /* Tắt bóng đổ (Drop Shadow) nặng trên iPad/Mobile vì hệ điều hành gánh cực kỳ kém */
+            .folder-shadow { filter: none !important; }
         }
         .folder-card-wrapper {
             perspective: 1000px;
@@ -346,7 +349,7 @@
             <div class="px-6 pb-8 pt-2 overflow-y-auto custom-scrollbar">
                 <div class="flex gap-5 mb-6">
                     <!-- Dynamic Folder Preview -->
-                    <div class="folder-shadow relative flex-shrink-0 w-[110px] sm:w-[130px] aspect-[1/1.4]">
+                    <div class="relative flex-shrink-0 w-[110px] sm:w-[130px] aspect-[1/1.4] folder-shadow">
                         <div id="bdCover" class="absolute inset-0 folder-mask bg-white dark:bg-slate-800 flex flex-col">
                             <div id="bdCoverBg" class="h-[60%] w-full bg-blue-500 relative flex flex-col p-2 pt-6">
                                 <div id="bdPattern" class="absolute inset-0 opacity-15 pointer-events-none"></div>
@@ -739,13 +742,13 @@
                 html += `<div class="absolute bottom-[20px] left-2 right-2 h-1 bg-gradient-to-r from-transparent via-slate-300 dark:via-slate-600 to-transparent shadow-[0_5px_15px_rgba(30,58,138,0.3)] dark:shadow-[0_5px_15px_rgba(0,0,0,0.6)] z-0 rounded-full opacity-70"></div>`;
                 
                 // Books flex wrapper (Added Hardware Acceleration for smooth scroll)
-                html += `<div class="flex gap-4 overflow-x-auto custom-scrollbar pb-8 pt-2 px-2 snap-x snap-mandatory scroll-smooth relative z-10" style="-webkit-overflow-scrolling: touch; transform: translateZ(0);">`;
+                html += `<div class="flex gap-4 overflow-x-auto custom-scrollbar pb-8 pt-2 px-2 snap-x snap-mandatory scroll-smooth relative z-10" style="-webkit-overflow-scrolling: touch; contain: content;">`;
                 
                 filteredBooks.forEach((book, index) => {
                     totalBooksVisible++;
                     const animDelayBook = (index * 0.05) + 's';
                     html += `
-                    <div class="folder-card-wrapper cursor-pointer group w-[130px] flex-shrink-0 snap-start relative aspect-[1/1.4] folder-shadow" onclick="openBookDetail('${book.url}', '${book.title}', '${chapter.chapterName}', '${gradClass}')">
+                    <div class="folder-card-wrapper cursor-pointer group w-[130px] flex-shrink-0 snap-start relative aspect-[1/1.4] folder-shadow transform-gpu" style="will-change: transform;" onclick="openBookDetail('${book.url}', '${book.title}', '${chapter.chapterName}', '${gradClass}')">
                         
                         <!-- Back layer 2 (Deepest) -->
                         <div class="absolute inset-0 bg-slate-300 dark:bg-slate-700 folder-mask translate-x-3 -translate-y-2 scale-95 opacity-50 z-0 transition-transform duration-300 group-hover:translate-x-4 group-hover:-translate-y-3"></div>
