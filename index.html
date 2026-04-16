@@ -851,7 +851,11 @@
             // Sử dụng cơ chế 'beacon' để đảm bảo tab dù bị Freeze bởi hệ điều hành lúc mở tab mới thì hệ thống mạng OS vẫn ngầm gửi tín hiệu đi 100%.
             if (typeof gtag === 'function') {
                 try {
-                    // 1. Gửi Custom Event (Lưu trữ mở rộng)
+                    // 1. GA4 cực kỳ khắt khe: Nó hay bắt Title gốc của file HTML. Ta sẽ tạm đổi document.title để ép GA4 nhận tên sách.
+                    const originalTitle = document.title;
+                    document.title = 'Sách: ' + activePdfTitle;
+
+                    // 2. Gửi Custom Event (Lưu trữ mở rộng)
                     gtag('event', 'open_book', {
                         'event_category': 'Medical Ebook',
                         'event_label': activePdfTitle,
@@ -859,14 +863,22 @@
                         'transport_type': 'beacon'
                     });
                     
-                    // 2. Gửi Page View ảo (ĐỂ HIỂN THỊ NGAY TÊN SÁCH LÊN THẺ "REALTIME" CỦA GA4)
-                    // GA4 Realtime chỉ show mặc định page_title ở thẻ "Views by Page title", các event phụ phải config custom dimension mất 24h.
+                    // 3. Gửi Screen View & Page View (Ép hiển thị Realtime)
+                    gtag('event', 'screen_view', {
+                        'app_name': 'App Nội Khoa',
+                        'screen_name': activePdfTitle,
+                        'transport_type': 'beacon'
+                    });
+
                     gtag('event', 'page_view', {
-                        'page_title': 'Đọc sách: ' + activePdfTitle,
-                        'page_location': window.location.origin + '/sach/' + encodeURIComponent(activePdfTitle),
+                        'page_title': document.title,
+                        'page_location': window.location.href + '?book=' + encodeURIComponent(activePdfTitle),
                         'transport_type': 'beacon'
                     });
                     
+                    // Trả lại Title cũ sau 1s
+                    setTimeout(() => { document.title = originalTitle; }, 1000);
+
                     console.log('🌟 [Analytics] Sent target: open_book ->', activePdfTitle);
                 } catch(e) { console.error('Analytics Error:', e); }
             }
