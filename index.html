@@ -703,7 +703,7 @@
             setTimeout(() => {
                 document.body.style.overflow = 'hidden'; 
                 // KHẮC PHỤC KHỰNG IPAD: Render tủ sách SAU KHI mở modal 350ms (Tăng mượt mà lên 60FPS)
-                if (ebookListEl.innerHTML.trim() === '') {
+                if (ebookListEl.children.length === 0) {
                     renderEbooks();
                 } else if (ebookSearchInput.value !== '') {
                     ebookSearchInput.value = '';
