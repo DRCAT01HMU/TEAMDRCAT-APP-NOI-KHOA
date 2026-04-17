@@ -73,6 +73,24 @@
         .ebook-gradient-3 { background: linear-gradient(135deg, #064e3b, #10b981); }
         .ebook-gradient-4 { background: linear-gradient(135deg, #7f1d1d, #ef4444); }
         .ebook-gradient-5 { background: linear-gradient(135deg, #78350f, #f59e0b); }
+
+        /* Promo Banner Styles */
+        @keyframes marquee {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(-100%); }
+        }
+        .animate-marquee {
+            display: inline-block;
+            min-width: max-content;
+            animation: marquee 20s linear infinite;
+        }
+        .group:hover .animate-marquee {
+            animation-play-state: paused;
+        }
+        .mask-edges {
+            -webkit-mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
+            mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
+        }
     </style>
     <script>
         tailwind.config = { darkMode: 'class', theme: { extend: { colors: { primary: '#0f172a' } } } }
@@ -235,8 +253,29 @@
     </header>
 
     <main class="relative z-10 pb-24">
+        
+        <!-- YBOOK PROMO BANNER -->
+        <div class="mx-2 mt-2 mb-2 overflow-hidden rounded-2xl bg-gradient-to-r from-rose-500 via-pink-500 to-purple-500 p-[1px] shadow-lg relative z-20 group">
+            <div class="relative bg-white dark:bg-slate-900 rounded-[15px] overflow-hidden px-3 py-2.5 flex items-center">
+                <div class="absolute inset-0 bg-gradient-to-r from-rose-500/15 to-purple-500/15 blur opacity-60"></div>
+                <div class="w-8 flex-shrink-0 z-10 flex items-center justify-center border-r border-slate-200 dark:border-slate-700/80 mr-3 pr-2">
+                    <i class="fas fa-gift text-rose-500 dark:text-rose-400 text-lg animate-bounce"></i>
+                </div>
+                <div class="flex-1 overflow-hidden relative z-10 mask-edges">
+                    <div class="animate-marquee whitespace-nowrap text-[13px] font-bold text-slate-800 dark:text-slate-200 tracking-wide pr-5">
+                        <span class="text-rose-600 dark:text-rose-400 uppercase drop-shadow-[0_0_8px_rgba(251,113,133,0.3)]"><i class="fas fa-fire mr-1 text-orange-500"></i> THƯ VIỆN YBOOK CẬP NHẬT MỚI:</span>
+                        <span class="mx-1">Ưu đãi từ <span class="font-black text-rose-500 dark:text-white">17/04 - 19/04</span>.</span>
+                        <span class="text-pink-600 dark:text-pink-400 font-extrabold bg-pink-100/80 dark:bg-pink-500/20 px-1.5 py-0.5 rounded shadow-sm inline-block">GIẢM 10%</span> <span class="opacity-90">cho bạn mới,</span>
+                        <span class="text-fuchsia-600 dark:text-fuchsia-400 font-extrabold bg-fuchsia-100/80 dark:bg-fuchsia-500/20 px-1.5 py-0.5 rounded ml-1 shadow-sm inline-block">GIẢM 20%</span> <span class="opacity-90">cho bạn đã đăng ký Test VIP 4 môn trở xuống,</span>
+                        <span class="text-purple-600 dark:text-purple-400 font-extrabold bg-purple-100/80 dark:bg-purple-500/20 px-1.5 py-0.5 rounded ml-1 shadow-sm inline-block">GIẢM 30%</span> <span class="opacity-90">cho bạn đã đăng ký Test VIP 5 môn trở lên.</span>
+                        <span class="text-amber-600 dark:text-amber-400 ml-2 font-black italic">Ưu đãi có hạn, nhanh tay nhé ^^</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- Hero Mesh Gradient Section -->
-        <div class="relative px-6 pt-8 pb-14 bg-slate-900 text-white rounded-b-[2.5rem] shadow-2xl mb-8 mx-2 mt-2 border border-slate-800" style="background: radial-gradient(circle at 0% 0%, #3b82f6 0%, transparent 60%), radial-gradient(circle at 100% 100%, #8b5cf6 0%, transparent 60%), #0f172a;">
+        <div class="relative px-6 pt-8 pb-14 bg-slate-900 text-white rounded-[2.5rem] shadow-2xl mb-8 mx-2 border border-slate-800" style="background: radial-gradient(circle at 0% 0%, #3b82f6 0%, transparent 60%), radial-gradient(circle at 100% 100%, #8b5cf6 0%, transparent 60%), #0f172a;">
             <div class="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]"></div>
             <!-- Animated glowing orbs -->
             <div class="absolute top-10 right-10 w-32 h-32 bg-blue-500/20 rounded-full blur-3xl animate-pulse"></div>
