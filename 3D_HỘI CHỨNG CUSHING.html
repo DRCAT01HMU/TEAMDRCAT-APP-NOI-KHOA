@@ -214,8 +214,8 @@ function parseQuizData(text) {
 
         const isCaseStart = line.match(/^(?:TÌNH HUỐNG LÂM SÀNG|Case lâm sàng|Tình huống|Case\s*\d+)/i);
         const isQ = line.match(/^(?:Câu|Question)[^\d]*([\d\.]+)(?:[^a-z0-9]*[:\.\-])?\s*(.*)/i);
-        const isOpt = line.match(/^([A-E])[\.\)\:\-\/]\s*(.*)/i);
-        const isAns = line.match(/^(?:Đáp án(?: đúng)?|Answer)\s*[:\.\-]?\s*([A-E])/i);
+        const isOpt = line.match(/^\(?([A-E])[\.\)\:\-\/]\s*(.*)/i);
+        const isAns = line.match(/^(?:Đáp án(?: đúng)?|Answer)\s*[:\.\-]?\s*\(?([A-E])\)?/i);
 
         if (isCaseStart && !isQ) {
             currentContext = line + '\n';
