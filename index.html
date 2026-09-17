@@ -121,11 +121,21 @@
             const statusText = document.getElementById('lock-status');
             const lockContainer = document.getElementById('lock-container');
             const lockScreen = document.getElementById('lock-screen');
+            const verifyBtn = document.getElementById('verifyBtn');
             if(!statusText) return;
-            statusText.innerText = "Đang mã hóa tín hiệu Server...";
-            lockContainer.classList.add('hidden');
+            
+            // Show loading state
+            statusText.innerText = "Đang kiểm tra trên Server, vui lòng đợi trong giây lát...";
+            document.getElementById('lock-device-code').value = deviceId;
+            lockContainer.classList.remove('hidden');
+            
+            if (verifyBtn) {
+                verifyBtn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Đang xử lý...';
+                verifyBtn.disabled = true;
+                verifyBtn.classList.add('opacity-70', 'cursor-not-allowed');
+            }
 
-            fetch(AUTH_API + "?id=" + deviceId)
+            fetch(AUTH_API + "?id=" + deviceId + "&t=" + new Date().getTime(), { cache: "no-store" })
                 .then(r => r.json())
                 .then(data => {
                     if (data.status === "approved" || data.status === "ok") {
@@ -141,12 +151,19 @@
                 .catch(e => {
                     statusText.innerHTML = "Offline.<br>Yêu cầu mạng di động/WiFi để xác thực khóa.";
                     lockContainer.classList.remove('hidden');
+                })
+                .finally(() => {
+                    if (verifyBtn) {
+                        verifyBtn.innerHTML = '<i class="fas fa-sync-alt group-hover:rotate-180 transition-transform duration-500"></i> Xác minh';
+                        verifyBtn.disabled = false;
+                        verifyBtn.classList.remove('opacity-70', 'cursor-not-allowed');
+                    }
                 });
         }
 
         function silentVerify() {
             if(navigator.onLine && localStorage.getItem('TDC_APPROVED') === 'true') {
-                fetch(AUTH_API + "?id=" + deviceId).then(r => r.json()).then(data => {
+                fetch(AUTH_API + "?id=" + deviceId + "&t=" + new Date().getTime(), { cache: "no-store" }).then(r => r.json()).then(data => {
                     if(data.status === "locked" || data.status === "error") {
                         localStorage.setItem('TDC_APPROVED', 'false'); window.location.reload();
                     }
@@ -220,7 +237,7 @@
                     <div class="absolute inset-0 w-1/4 bg-white/5 -skew-x-12 -translate-x-full group-hover:animate-[shimmer_1.5s_infinite]"></div>
                     <i class="fas fa-paste text-xl text-blue-400"></i> <span class="tracking-wide">SAO CHÉP MÃ THIẾT BỊ</span>
                 </button>
-                <button onclick="verifyWithServer()" class="w-full bg-transparent hover:bg-blue-900/20 text-blue-500 hover:text-blue-400 font-bold py-3 px-4 border border-blue-900/30 hover:border-blue-500/40 rounded-xl transition-all flex items-center justify-center gap-2 group">
+                <button id="verifyBtn" onclick="verifyWithServer()" class="w-full bg-transparent hover:bg-blue-900/20 text-blue-500 hover:text-blue-400 font-bold py-3 px-4 border border-blue-900/30 hover:border-blue-500/40 rounded-xl transition-all flex items-center justify-center gap-2 group">
                     <i class="fas fa-sync-alt group-hover:rotate-180 transition-transform duration-500"></i> Xác minh
                 </button>
             </div>
@@ -937,7 +954,8 @@
                     document.title = 'Sách: ' + activePdfTitle;
                     
                     // Xử lý tạo đường dẫn ảo để lừa thẻ "Đường dẫn trang" của Analytics
-                    const basePath = window.location.pathname.endsWith('/') ? window.location.pathname : window.location.pathname + '/';
+                    const originalPath = window.location.pathname;
+                    const basePath = originalPath.endsWith('/') ? originalPath : originalPath + '/';
                     const fakePath = basePath + 'docsach/' + encodeURIComponent(activePdfTitle.replace(/\s+/g, '-'));
 
                     // 2. Gửi Custom Event
@@ -962,7 +980,7 @@
                     // Trả lại Title và link gốc sau 1s
                     setTimeout(() => { 
                         document.title = originalTitle; 
-                        history.replaceState(null, '', basePath);
+                        history.replaceState(null, '', originalPath);
                     }, 1000);
 
                     console.log('🌟 [Analytics] Sent target: open_book ->', activePdfTitle, fakePath);
