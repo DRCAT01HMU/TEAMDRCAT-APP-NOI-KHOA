@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>CASE TEST TDC</title>
+    <title>TEST NỘI KHOA</title>
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#0f172a">
     <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/3004/3004458.png">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="TDC Care">
+    <meta name="apple-mobile-web-app-title" content="Nội Khoa">
     <link rel="preconnect" href="https://drive.google.com">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -140,6 +140,7 @@
                 .then(data => {
                     if (data.status === "approved" || data.status === "ok") {
                         localStorage.setItem('TDC_APPROVED', 'true');
+                        if ('serviceWorker' in navigator) { navigator.serviceWorker.register('./sw.js'); }
                         lockScreen.style.opacity = '0';
                         setTimeout(() => { lockScreen.style.display = 'none'; document.body.style.overflow = 'auto'; }, 500);
                     } else {
@@ -700,7 +701,11 @@
         window.addEventListener('focus', () => { updateStats(); renderCases(); silentVerify(); });
 
         if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').then(r => console.log('SW V8 ready')).catch(e => console.error(e)));
+            window.addEventListener('load', () => {
+                if (localStorage.getItem('TDC_APPROVED') === 'true') {
+                    navigator.serviceWorker.register('./sw.js').catch(err => console.error(err));
+                }
+            });
         }
     
         // NETWORK STATUS LISTENER
